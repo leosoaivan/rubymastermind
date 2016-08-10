@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 
 class Game
-  attr_accessor :code
-
   def initialize
     @charset = ("A".."F").to_a
-    @code = []
+    @secret_code = []
+    @guesses = []
+    @feedback = []
+    @game_won = FALSE
     @@turns = 12
-
     game_start
   end
 
@@ -16,13 +16,13 @@ class Game
   def game_start
   	code_generator
   	start_message
-  	puts "#{@code}"
+  	puts "#{@secret_code}"
   	game_loop
   end
 
   def code_generator
   	4.times do
-  	  @code << @charset[rand(6)]
+  	  @secret_code << @charset[rand(6)]
   	end
   end
 
@@ -35,47 +35,85 @@ class Game
 
   def game_loop
   	begin
-  	  puts "You have #{@@turns} turns left."
-  	  player_guess = get_guess
-  	  evaluate_guess(player_guess)
-  	  @@turns -= 1
-  	end until @@turns == 0 || player_guess == @code
+  	  turn_countdown
+  	  player_guess = get_code_input
+  	  store_code_input(player_guess)
+  	  prepare_feedback(player_guess)
+  	  print_code_output(@guesses, @feedback)
+  	end until @@turns == 0 || player_guess == @secret_code
+    end_message
   end
 
-  def get_guess
+  def turn_countdown
+  	puts "You have #{@@turns} turns left."
+  	@@turns -= 1
+  end
+
+  def get_code_input
   	begin
   	  puts "Enter your 4-letter code, A thru F:"
   	  guess = gets.gsub!(/\s+/, "").upcase
-  	end until guess.size == 4 && /[A-F]+{4}/.match(guess)
+  	end until guess.length == 4 && /[A-F]+{4}/.match(guess)
   	guess.split(//)
   end
 
-  def evaluate_guess(player_guess)
-  	if player_guess == @code
-  	  puts "You won!"
-  	else
-      puts "#{exact_matches(player_guess)} exact, #{close_matches(player_guess)} close"
-    end
+  def store_code_input(p_guess)
+  	@guesses << p_guess
   end
 
-  def exact_matches(player_guess)
+  def print_code_output(guesses, feedback)
+  	puts ""
+  	(0..@guesses.length - 1).each do |i|
+   	  print "#{guesses[i][0]}-#{guesses[i][1]}-#{guesses[i][2]}-#{guesses[i][3]} "
+  	  print "#{feedback[i][0]} exact, "
+  	  puts "#{feedback[i][1]} close"
+  	end
+  end
+
+  def prepare_feedback(p_guess)
+    @feedback << [exact_matches(p_guess), close_matches(p_guess)]
+  end
+
+  def exact_matches(p_guess)
   	exact = 0
-  	for i in 0..(player_guess.size - 1)
-  	  next unless player_guess[i] == @code[i]
+  	(0..p_guess.length - 1).each do |i|
+      next unless p_guess[i] == @secret_code[i]
   	  exact += 1
   	end
   	exact
   end
 
-  def close_matches(player_guess)
+  def close_matches(p_guess)
   	player_ary = []
   	code_ary = []
-  	for i in 0..(player_guess.size - 1)
-  	  next unless player_guess[i] != @code[i]
-  	  player_ary << player_guess[i]
-  	  code_ary << @code[i]
+  	(0..p_guess.size - 1).each do |i|
+  	  next unless p_guess[i] != @secret_code[i]
+  	  player_ary << p_guess[i]
+  	  code_ary << @secret_code[i]
   	end
-  	(player_ary&code_ary).length
+  	(player_ary & code_ary).length
+  end
+
+  def end_message
+  	if @game_won == TRUE
+  	  puts "You figured out the secret code!"
+  	else
+  	  puts "You've lost to the Master Mind!"
+  	end
+    restart
+  end
+
+  def restart
+  	puts "Would you like to play again? Y/N?"
+  	input = gets.chomp.downcase
+  	if input == "y"
+  	  x = Game.new
+  	elsif input == "n"
+  	  puts "Goodbye!"
+  	else
+  	  puts "I didn't get that."
+      restart
+    end
   end
 
 end
