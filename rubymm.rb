@@ -16,7 +16,7 @@ class Game
   def game_start
   	code_generator
   	start_message
-  	puts "#{@secret_code}"
+#  	puts "#{@secret_code}"
   	game_loop
   end
 
@@ -65,13 +65,14 @@ class Game
   	puts ""
   	(0..@guesses.length - 1).each do |i|
    	  print "#{guesses[i][0]}-#{guesses[i][1]}-#{guesses[i][2]}-#{guesses[i][3]} "
-  	  print "#{feedback[i][0]} exact, "
+  	  print "=> #{feedback[i][0]} exact, "
   	  puts "#{feedback[i][1]} close"
   	end
   end
 
   def prepare_feedback(p_guess)
     @feedback << [exact_matches(p_guess), close_matches(p_guess)]
+    @game_won = TRUE if p_guess == @secret_code
   end
 
   def exact_matches(p_guess)
