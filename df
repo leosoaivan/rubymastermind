@@ -1,0 +1,43 @@
+[33mcommit 89710ca4d4d8a33ac0ddad34bf3cb1d154606bf2[m
+Author: Leonard Soai-Van <leo.soaivan@gmail.com>
+Date:   Fri Aug 12 09:29:28 2016 -0400
+
+    Add game winning condition
+
+[33mcommit 1375252eaa9240ea014672dd9b4966c25550c1f7[m
+Author: Leonard Soai-Van <leo.soaivan@gmail.com>
+Date:   Tue Aug 9 21:17:14 2016 -0400
+
+    Add code printout with inline feedback
+
+[33mcommit 2442921f2d5af17d1fd615ea029614bef0b9cd02[m
+Author: Leonard Soai-Van <leo.soaivan@gmail.com>
+Date:   Mon Aug 8 16:32:34 2016 -0400
+
+    Add first working prototype
+
+[33mcommit 70c4593a7929e4b0cf54de066a76e4513947af98[m
+Author: Leonard Soai-Van <leo.soaivan@gmail.com>
+Date:   Fri Aug 5 12:32:46 2016 -0400
+
+    Add #player_guess
+
+[33mcommit 3f7b48d9848abcb305731c083950c13304aef518[m
+Author: leosoaivan <leo.soaivan@gmail.com>
+Date:   Thu Aug 4 21:43:59 2016 -0400
+
+    Update README.md
+    
+    Add link to TOP's Ruby OOP curriculum.
+
+[33mcommit ca77c672ba62202ffabbf3d81afdda9fb05c66cb[m
+Author: Leonard Soai-Van <leo.soaivan@gmail.com>
+Date:   Thu Aug 4 21:37:51 2016 -0400
+
+    Add code generator (A..F)
+
+[33mcommit 63bf73687eba621946b944ef509212c80cd4cbe0[m
+Author: leosoaivan <leo.soaivan@gmail.com>
+Date:   Thu Aug 4 20:46:28 2016 -0400
+
+    Initial commit
