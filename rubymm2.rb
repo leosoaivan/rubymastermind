@@ -1,70 +1,9 @@
 #!/usr/bin/env ruby
-
-class Player
-  attr_accessor :secret_code
-
-  def initialize
-    @charset = ("A".."F").to_a
-    @secret_code = []
-  end
-
-  def get_guess
-    begin
-      puts "Enter your 4-letter code, A thru F:"
-      guess = gets.gsub!(/\s+/, "").upcase
-    end until guess.length == 4 && /[A-F]+{4}/.match(guess)
-    guess.split(//)
-  end
-
-  def create_code
-    code_generator
-  end
-
-  private
-
-  def code_generator
-    4.times do
-    @secret_code << @charset[rand(6)]
-    end
-  end
-
-end
-
-class Computer
-  attr_accessor :secret_code
-
-  def initialize
-    @charset = ("A".."F").to_a
-    @secret_code = []
-  end
-
-  def get_guess
-    begin
-      puts "Please enter a 4-character code for the computer to guess,"
-      puts "using the letters A through F:"
-      code = gets.gsub!(/\s+/, "").upcase
-    end until guess.length == 4 && /[A-F]+{4}/.match(guess)
-    code.split(//)
-  end
-
-  def create_code
-    code_generator
-  end
-
-  private
-
-  def code_generator
-    4.times do
-    @secret_code << @charset[rand(6)]
-    end
-  end
-
-end
+require './player.rb'
+require './computer.rb'
 
 class Game
   def initialize
-    @charset = ("A".."F").to_a
-    @secret_code = []
     @guesses = []
     @feedback = []
     @game_won = FALSE
@@ -74,6 +13,14 @@ class Game
   end
 
   private
+
+  def game_start
+    system "clear"
+    start_message
+    current_player(player_role)
+    @current_player.create_code
+    game_loop
+  end
 
   def start_message
     puts "*********************************************************************"
@@ -91,8 +38,8 @@ class Game
   def player_role
     begin
       puts ""
-      puts "Would you like to (S)ET the secret code, or would you like to"
-      puts "(G)UESS the computer's code? S/G?"
+      puts "Would you like to (G)UESS the computer's secret code, or would you"
+      puts "like to (M)AKE your own for the computer to guess? G/M?"
       role = gets.chomp.upcase
       puts "You picked (#{role}). Is this correct? Y/N?"
       confirm = gets.chomp.upcase
@@ -108,15 +55,6 @@ class Game
     end
   end
 
-  def game_start
-    system "clear"
-    start_message
-    current_player(player_role)
-    @current_player.create_code
-    puts "#{@current_player.secret_code}"
-    game_loop
-  end
-
   def game_loop
     begin
       turn_countdown
@@ -124,7 +62,7 @@ class Game
       store_code_input(player_guess)
       prepare_feedback(player_guess)
       print_code_output(@guesses, @feedback)
-    end until @@turns == 0 || player_guess == @secret_code
+    end until @@turns == 0 || player_guess == @current_player.secret_code
     end_message
   end
 
@@ -174,11 +112,27 @@ class Game
 
   def end_message
     if @game_won == TRUE
-      puts "You figured out the secret code!"
+      winning_messages
     else
-      puts "You've lost to the Master Mind!"
+      losing_messages
     end
     restart
+  end
+
+  def winning_messages
+    if @current_player.class == Player
+      puts "You figured out the secret code!"
+    else
+      puts "The Computer has figured out your code!"
+    end
+  end
+
+  def losing_messages
+    if @current_player.class == Player
+      puts "You've lost to the Master Mind!"
+    else
+      puts "The Computer has lost to you, Master Mind!"
+    end
   end
 
   def restart
