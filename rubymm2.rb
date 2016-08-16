@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+
 require './player.rb'
 require './computer.rb'
 
@@ -41,6 +42,8 @@ class Game
       puts "Would you like to (G)UESS the computer's secret code, or would you"
       puts "like to (M)AKE your own for the computer to guess? G/M?"
       role = gets.chomp.upcase
+    end until role == "G" || role == "M"
+    begin
       puts "You picked (#{role}). Is this correct? Y/N?"
       confirm = gets.chomp.upcase
     end until confirm == "Y"
@@ -59,15 +62,19 @@ class Game
     begin
       turn_countdown
       player_guess = @current_player.get_guess
+      print @current_player.possible
       store_code_input(player_guess)
       prepare_feedback(player_guess)
       print_code_output(@guesses, @feedback)
+      if @current_player.class == Computer
+        eliminate_matches(player_guess, @current_player.possible)
+      end
     end until @@turns == 0 || player_guess == @current_player.secret_code
     end_message
   end
 
   def turn_countdown
-    puts "You have #{@@turns} turns left."
+    puts "#{@current_player.name} have #{@@turns} turns left."
     @@turns -= 1
   end
 
@@ -76,26 +83,27 @@ class Game
   end
 
   def prepare_feedback(p_guess)
-    @feedback << [exact_matches(p_guess), close_matches(p_guess)]
+    a = @current_player.secret_code
+    @feedback << [exact_matches(p_guess, a), close_matches(p_guess, a)]
     @game_won = TRUE if p_guess == @current_player.secret_code
   end
 
-  def exact_matches(p_guess)
+  def exact_matches(p_guess, code)
     exact = 0
-    (0..p_guess.length - 1).each do |i|
-      next unless p_guess[i] == @current_player.secret_code[i]
+    (0...p_guess.length).each do |i|
+      next unless p_guess[i] == code[i]
       exact += 1
     end
     exact
   end
 
-  def close_matches(p_guess)
+  def close_matches(p_guess, code)
     ary1 = []
     ary2 = []
-    (0..p_guess.size - 1).each do |i|
-      next unless p_guess[i] != @current_player.secret_code[i]
+    (0...p_guess.length).each do |i|
+      next unless p_guess[i] != code[i]
       ary1 << p_guess[i]
-      ary2 << @current_player.secret_code[i]
+      ary2 << code[i]
     end
     ary3 = (ary1 & ary2).flat_map { |n| [n]*[ary1.count(n), ary2.count(n)].min }
     ary3.length
@@ -103,11 +111,20 @@ class Game
 
   def print_code_output(guesses, feedback)
     puts ""
-    (0..@guesses.length - 1).each do |i|
+    (0...@guesses.length).each do |i|
       print "#{guesses[i][0]}-#{guesses[i][1]}-#{guesses[i][2]}-#{guesses[i][3]} "
       print "=> #{feedback[i][0]} exact, "
       puts "#{feedback[i][1]} close"
     end
+  end
+
+  def eliminate_matches(p_guess, ary)
+    (0...ary.length).each do |i|
+      unless @feedback[-1] == [exact_matches(p_guess, ary[i]), close_matches(p_guess, ary[i])]
+        ary[i] = NIL
+      end
+    end
+    @current_player.possible = ary.compact
   end
 
   def end_message
@@ -137,10 +154,10 @@ class Game
 
   def restart
     puts "Would you like to play again? Y/N?"
-    input = gets.chomp.downcase
-    if input == "y"
+    input = gets.chomp.upcase
+    if input == "Y"
       x = Game.new
-    elsif input == "n"
+    elsif input == "N"
       puts "Goodbye!"
     else
       puts "I didn't get that."

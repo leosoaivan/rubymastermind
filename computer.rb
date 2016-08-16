@@ -1,17 +1,16 @@
 class Computer
-  attr_accessor :secret_code
+  attr_accessor :secret_code, :name, :possible
 
   def initialize
     @charset = ("A".."F").to_a
     @secret_code = []
+    @name = "Computer"
+    @possible = @charset.repeated_permutation(4).to_a
   end
 
   def get_guess
-    computer_code = []
-    4.times do
-      computer_code << @charset[rand(6)]
-    end
-    computer_code
+    sleep(1)
+    @possible.sample
   end
 
   def create_code

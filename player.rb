@@ -1,9 +1,10 @@
 class Player
-  attr_accessor :secret_code
+  attr_accessor :secret_code, :name
 
   def initialize
     @charset = ("A".."F").to_a
     @secret_code = []
+    @name = "You"
   end
 
   def get_guess
