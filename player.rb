@@ -4,7 +4,7 @@ class Player
   def initialize
     @charset = ("A".."F").to_a
     @secret_code = []
-    @name = "You"
+    @name = ""
   end
 
   def get_guess

@@ -53,6 +53,8 @@ class Game
   def current_player(p)
     if p == "G"
       @current_player = Player.new
+      puts "What is your name?"
+      @current_player.name = gets.chomp
     else
       @current_player = Computer.new
     end
@@ -62,7 +64,6 @@ class Game
     begin
       turn_countdown
       player_guess = @current_player.get_guess
-      print @current_player.possible
       store_code_input(player_guess)
       prepare_feedback(player_guess)
       print_code_output(@guesses, @feedback)
@@ -74,7 +75,8 @@ class Game
   end
 
   def turn_countdown
-    puts "#{@current_player.name} have #{@@turns} turns left."
+    puts ""
+    puts "#{@current_player.name} has #{@@turns} turns left."
     @@turns -= 1
   end
 
@@ -110,7 +112,6 @@ class Game
   end
 
   def print_code_output(guesses, feedback)
-    puts ""
     (0...@guesses.length).each do |i|
       print "#{guesses[i][0]}-#{guesses[i][1]}-#{guesses[i][2]}-#{guesses[i][3]} "
       print "=> #{feedback[i][0]} exact, "
@@ -137,6 +138,7 @@ class Game
   end
 
   def winning_messages
+    puts ""
     if @current_player.class == Player
       puts "You figured out the secret code!"
     else
@@ -145,6 +147,7 @@ class Game
   end
 
   def losing_messages
+    puts ""
     if @current_player.class == Player
       puts "You've lost to the Master Mind!"
     else
