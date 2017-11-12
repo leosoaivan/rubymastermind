@@ -7,9 +7,9 @@ class Game
   def initialize
     @guesses = []
     @feedback = []
-    @game_won = FALSE
+    @game_won = false
     @@turns = 12
-    @current_player = NIL
+    @current_player = nil
     game_start
   end
 
@@ -46,7 +46,12 @@ class Game
     begin
       puts "You picked (#{role}). Is this correct? Y/N?"
       confirm = gets.chomp.upcase
-    end until confirm == "Y"
+      if confirm == "Y"
+        role
+      elsif confirm == "N"
+        player_role
+      end
+    end until confirm == "Y" || confirm == "N"
     role
   end
 
@@ -87,7 +92,7 @@ class Game
   def prepare_feedback(p_guess)
     a = @current_player.secret_code
     @feedback << [exact_matches(p_guess, a), close_matches(p_guess, a)]
-    @game_won = TRUE if p_guess == @current_player.secret_code
+    @game_won = true if p_guess == @current_player.secret_code
   end
 
   def exact_matches(p_guess, code)
@@ -122,14 +127,14 @@ class Game
   def eliminate_matches(p_guess, ary)
     (0...ary.length).each do |i|
       unless @feedback[-1] == [exact_matches(p_guess, ary[i]), close_matches(p_guess, ary[i])]
-        ary[i] = NIL
+        ary[i] = nil
       end
     end
     @current_player.possible = ary.compact
   end
 
   def end_message
-    if @game_won == TRUE
+    if @game_won == true
       winning_messages
     else
       losing_messages

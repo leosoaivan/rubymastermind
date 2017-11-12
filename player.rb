@@ -9,7 +9,7 @@ class Player
 
   def get_guess
     begin
-      puts "Enter your 4-letter code, A thru F:"
+      print "Enter your 4-letter code, A thru F: "
       guess = gets.gsub!(/\s+/, "").upcase
     end until guess.length == 4 && /[A-F]+{4}/.match(guess)
     guess.split(//)
