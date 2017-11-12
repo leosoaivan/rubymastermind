@@ -18,3 +18,6 @@ $ cd [local repository name]
 4. Run the script from the directory!
 ```
 $ ruby rubymm2.rb
+```
+
+![Thumbnail of command line](/mastermind_thumbnail.png)
